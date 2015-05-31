@@ -1,9 +1,11 @@
 <?php
 
-//unset($_COOKIE["count"]);
-$count = (isset($_COOKIE["count"])) ? $_COOKIE["count"] : 0; //существует ли куки
+session_start(); //появляется идентификатор сессии и файл на сервере
+$count = (isset($_SESSION["count"])) ? $_SESSION["count"] : 0;
 $count++;
-//setcookie("count", $count);
-setcookie("count", $count, time() + 5); //время жизни 5 секунд
-echo "Количество обновлений: $count раз";
+$_SESSION["count"] = $count;
+//$_SESSION["count1"] = 15;
+echo "Обновлений страниц: $count раз";
+//через 15 минут сессия удаляется автоматически
+session_destroy(); //очищаем идентификатор сессии
 ?>
