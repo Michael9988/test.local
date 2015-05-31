@@ -1,13 +1,9 @@
 <?php
-$message = "Текст сообщения";
-$to = "felix9988@mail.ru";
-$from = "felix9988@gmail.ru";
-$subject = "Тема сообщения";
 
-$headers = "From: $from\r\nReply-to: $from\r\nContent-type: text/plain; charset = utf-8\r\n";
-mail($to, $subject, $message, $headers);
-$message = "Сообщение с <b>HTML</b> <i>кодом</i>";
-$headers = "From: $from\r\nReply-to: $from\r\nContent-type: text/html; charset = utf-8\r\n";
-mail($to, $subject, $message, $headers);
+//unset($_COOKIE["count"]);
+$count = (isset($_COOKIE["count"])) ? $_COOKIE["count"] : 0; //существует ли куки
+$count++;
+//setcookie("count", $count);
+setcookie("count", $count, time() + 5); //время жизни 5 секунд
+echo "Количество обновлений: $count раз";
 ?>
-<br />
