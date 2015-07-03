@@ -1,97 +1,59 @@
 <?php
-session_start();
-if (isset($_POST["send"])) {
-    $from = $_POST["from"];
-    $to = $_POST["to"];
-    $subject = $_POST["subject"];
-    $message = $_POST["message"];
 
-    $_SESSION["from"] = $from;
-    $_SESSION["to"] = $to;
-    $_SESSION["subject"] = $subject;
-    $_SESSION["message"] = $message;
+class Point {
 
-    $error_from = "";
-    $error_to = "";
-    $error_subject = "";
-    $error_message = "";
+    private $x;
+    private $y;
 
-    if (!preg_match("/^[a-z0-9][a-z0-9\.-_]*[a-z0-9]*@([a-z0-9]+([a-z0-9-]*[a-z0-9]+)*\.)+[a-z]+/i", $from)) {
-        $error_from = "Некорректный e-mail";
-        $error = TRUE;
+    public function __construct($x, $y) {
+        $this->x = $x;
+        $this->y = $y;
     }
-    if (!preg_match("/^[a-z0-9][a-z0-9\.-_]*[a-z0-9]*@([a-z0-9]+([a-z0-9-]*[a-z0-9]+)*\.)+[a-z]+/i", $to)) {
-        $error_to = "Некорректный e-mail";
-        $error = TRUE;
+
+    public function getX() {
+        return $this->x;
     }
-    if (strlen($subject) == 0) {
-        $error_subject = "Не написана тема";
-        $error = TRUE;
+
+    public function getY() {
+        return $this->y;
     }
-    if (strlen($message) == 0) {
-        $error_message = "Не написано сообщение";
-        $error = TRUE;
+
+    public function setX($x) {
+        $this->x = $x;
     }
-    if (!$error) {
-        $subject = "=?windows-1251?B?" . base64_encode($subject) . "?=";
-        $headers = "From: $from\r\nReply-to: $from\r\nContent-type: text/plain; charset=windows-1251\r\n";
-        mail($to, $subject, $message, $headers);
-        header("Location: success.php?send=1");
-        exit;
+
+    public function setY($y) {
+        $this->x = $y;
     }
+
+    public function setPoint($point) {
+        $this->x = $point->x;
+        $this->y = $point->y;
+    }
+
+    public function getDistance($point) {
+        return sqrt($this->getPow2($point));
+    }
+    
+    private function getPow2($point){
+        return pow($this->x - $point->x, 2) + pow($this->y - $point->y, 2);
+    }
+
+    public function __toString() {
+        return "Точка с координатами (" . $this->x . "; " . $this->y . ")";
+    }
+
+    public function __destruct() {
+        echo "<br />Объект уничтожен!";
+    }
+
 }
-?>
-<html>
-    <head>
-        <title>Cервис рассылки</title>
-    </head>
-    <body>
-        <h1>Отправить почту!</h1>
-        <form name="myform" action="index.php" method="post">
-            <table>
-                <tr>
-                    <td>От кого:</td>
-                    <td>
-                        <input type="text" name="from" value="<?php echo $_SESSION["from"]; ?>" />
-                    </td>
-                    <td>
-                        <span style="color: red;"><?php echo $error_from; ?></span>
-                    </td>
-                </tr>
-                <tr>
-                    <td>Кому:</td>
-                    <td>
-                        <input type="text" name="to" value="<?php echo $_SESSION["to"]; ?>" />
-                    </td>
-                    <td>
-                        <span style="color: red;"><?php echo $error_to; ?></span>
-                    </td>
-                </tr>
-                <tr>
-                    <td>Тема:</td>
-                    <td>
-                        <input type="text" name="subject" value="<?php echo $_SESSION["subject"]; ?>" />
-                    </td>
-                    <td>
-                        <span style="color: red;"><?php echo $error_subject; ?></span>
-                    </td>
-                </tr>
-                <tr>
-                    <td>Сообщение:</td>
-                    <td>
-                        <textarea name="message" cols="22" rows="10" ><?php echo $_SESSION["message"]; ?></textarea>
-                    </td>
-                    <td>
-                        <span style="color: red;"><?php echo $error_message; ?></span>
-                    </td>
-                </tr>
-                <tr>
-                    <td colspan="3">
-                        <input type="submit" name="send" value="Отправить"/>
-                    </td>
 
-                </tr>
-            </table>
-        </form>
-    </body>
-</html>
+$point = new Point(5, 7);
+echo $point . "<br />";
+$point->setX(10);
+$point->setY(12);
+echo $point . "<br />";
+$point_1 = new Point(10, 10);
+echo $point->getDistance($point_1) . "<br />";
+?>
