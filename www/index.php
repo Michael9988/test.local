@@ -1,38 +1,60 @@
 <?php
 
-class Point {
+class Auto {
 
-    public $x;
-    public $y;
+    protected $x;
+    protected $y;
 
-    public function __construct($x, $y) {
+    public function __construct($x = 0, $y = 0) {
         $this->x = $x;
         $this->y = $y;
     }
 
-    public function __toString() {
-        return "(" . $this->x . "; " . $this->y . ")<br />";
+    public function move($x, $y) {
+        $this->strMove($x, $y);
     }
-    
-    public function __clone() {
-        $this->y = 50;
+
+    protected function strMove($x, $y, $type = "") {
+        if ($type == "") {
+            echo "Двигаем авто из (" . $this->x . "; " . $this->y . ") в (" . $x . "; " . $y . ")<br />";
+        } else {
+            echo "Двигаем $type из (" . $this->x . "; " . $this->y . ") в (" . $x . "; " . $y . ")<br />";
+        }
     }
 
 }
 
-$point = new Point(5, 7);
-$point_1 = $point;
-echo $point;
-echo $point_1;
-$point->x = 10;
-echo $point;
-echo $point_1;
-$point_1->y = 10;
-echo $point;
-echo $point_1;
-echo '---------------' . "<br />";
-$point_1 = clone $point;
-$point->x = 100;
-echo $point;
-echo $point_1;
+class Car extends Auto {
+
+    public function __construct($x = 0, $y = 0) {
+        parent::__construct($x, $y);
+    }
+
+    public function move($x, $y) {
+        $this->strMove($x, $y, "легковой");
+    }
+
+}
+
+class Truck extends Auto {
+
+    private $capacity;
+
+    public function __construct($x = 0, $y = 0, $capacity = 5000) {
+        parent::__construct($x, $y);
+        $this->capacity = $capacity;
+    }
+
+    public function move($x, $y) {
+        $this->strMove($x, $y, "грузовой");
+    }
+
+}
+
+$auto = new Auto();
+$car = new Car();
+$truck = new Truck();
+$auto->move(10, 7);
+$car->move(10, 10);
+$truck->move(10, 10)
 ?>
