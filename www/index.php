@@ -1,60 +1,56 @@
 <?php
 
-class Auto {
+abstract class Shape {
 
     protected $x;
     protected $y;
 
-    public function __construct($x = 0, $y = 0) {
+    public function __construct($x, $y) {
         $this->x = $x;
         $this->y = $y;
     }
 
-    public function move($x, $y) {
-        $this->strMove($x, $y);
+    public function draw() {
+        echo $this->drawShape() . "<br />";
     }
 
-    protected function strMove($x, $y, $type = "") {
-        if ($type == "") {
-            echo "Двигаем авто из (" . $this->x . "; " . $this->y . ") в (" . $x . "; " . $y . ")<br />";
-        } else {
-            echo "Двигаем $type из (" . $this->x . "; " . $this->y . ") в (" . $x . "; " . $y . ")<br />";
-        }
-    }
-
+    abstract protected function drawShape();
 }
 
-class Car extends Auto {
+class Circle extends Shape {
 
-    public function __construct($x = 0, $y = 0) {
+    private $radius;
+
+    public function __construct($x, $y, $radius) {
         parent::__construct($x, $y);
+        $this->radius = $radius;
     }
 
-    public function move($x, $y) {
-        $this->strMove($x, $y, "легковой");
+    protected function drawShape() {
+        return "Рисуем окружность с радиусом " . $this->radius;
     }
 
 }
 
-class Truck extends Auto {
+class Rectangle extends Shape {
 
-    private $capacity;
+    private $width;
+    private $height;
 
-    public function __construct($x = 0, $y = 0, $capacity = 5000) {
+    public function __construct($x, $y, $width, $height) {
         parent::__construct($x, $y);
-        $this->capacity = $capacity;
+        $this->width = $width;
+        $this->height = $height;
     }
 
-    public function move($x, $y) {
-        $this->strMove($x, $y, "грузовой");
+    protected function drawShape() {
+        return "Рисуем прямоугольник с шириной " . $this->width . " и высотой " . $this->height;
     }
 
 }
 
-$auto = new Auto();
-$car = new Car();
-$truck = new Truck();
-$auto->move(10, 7);
-$car->move(10, 10);
-$truck->move(10, 10)
+$circle = new Circle(0, 0, 50);
+$rectangle = new Rectangle(0, 0, 100, 50);
+$circle->draw();
+$rectangle->draw();
 ?>
