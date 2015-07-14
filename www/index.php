@@ -1,56 +1,26 @@
 <?php
 
-abstract class Shape {
+interface FileIO {
 
-    protected $x;
-    protected $y;
+    public function read();
 
-    public function __construct($x, $y) {
-        $this->x = $x;
-        $this->y = $y;
-    }
-
-    public function draw() {
-        echo $this->drawShape() . "<br />";
-    }
-
-    abstract protected function drawShape();
+    public function write();
 }
 
-class Circle extends Shape {
+class Point implements FileIO {
 
-    private $radius;
-
-    public function __construct($x, $y, $radius) {
-        parent::__construct($x, $y);
-        $this->radius = $radius;
+    public function read() {
+        echo "Читаем из файла";
     }
 
-    protected function drawShape() {
-        return "Рисуем окружность с радиусом " . $this->radius;
+    public function write() {
+        echo "пишем в файл";
     }
 
 }
 
-class Rectangle extends Shape {
-
-    private $width;
-    private $height;
-
-    public function __construct($x, $y, $width, $height) {
-        parent::__construct($x, $y);
-        $this->width = $width;
-        $this->height = $height;
-    }
-
-    protected function drawShape() {
-        return "Рисуем прямоугольник с шириной " . $this->width . " и высотой " . $this->height;
-    }
-
-}
-
-$circle = new Circle(0, 0, 50);
-$rectangle = new Rectangle(0, 0, 100, 50);
-$circle->draw();
-$rectangle->draw();
+$point = new Point();
+$point->read();
+echo "<br/>";
+$point->write();
 ?>
