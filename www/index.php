@@ -2,11 +2,18 @@
 
 $mysqli = new mysqli("localhost", "root", "", "mybase");
 $mysqli->query("SET NAMES 'utf-8'");
-$mysqli->query("CREATE DATABASE `temp`");
-$mysqli->query("CREATE TABLE `temp`.`cities` (`id` INT(11) UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY, `title` VARCHAR(255) character set utf8 collate utf8_general_ci NOT NULL) ENGINE=MYISAM CHARACTER SET utf8 COLLATE utf8_general_ci");
-$mysqli->query("ALTER TABLE `temp`.`cities` ADD `utc` TINYINT(2) NOT NULL");
-$mysqli->query("ALTER TABLE `temp`.`cities` DROP `utc`");
-$mysqli->query("DROP TABLE `temp`.`cities`");
-$mysqli->query("DROP DATABASE `temp`");
+$success = $mysqli->query("INSERT INTO `users` (`login`, `password`, `regdate`) VALUES ('User1', '" . md5("123") . "','" . time() . "')");
+
+$last_insert_id = $mysqli->insert_id;
+
+for ($i = 2; $i < 10; $i++) {
+    $mysqli->query("INSERT INTO `users` (`login`, `password`, `regdate`) VALUES ('User$i', '" . md5("123") . "','" . time() . "')");
+}
+echo $last_insert_id;
+$mysqli->query("UPDATE `users` SET `regdate`='1' WHERE `id`>5");
+$mysqli->query("UPDATE `users` SET `regdate`='111' WHERE `login` = 'MyUser' OR (`id` > 5 AND `id` < 15)");
+
+
+$mysqli->query("DELETE FROM `users` WHERE `id` > '" . ($last_insert_id - 5) . "'");
 $mysqli->close();
 ?>
