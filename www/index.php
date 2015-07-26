@@ -1,19 +1,23 @@
 <?php
 
+function printResultSet($result_set) {
+    echo "Количество записей: " . $result_set->num_rows . "<br />";
+    while (($row = $result_set->fetch_assoc()) != FALSE) {
+        print_r($row);
+        echo "<br />";
+    }
+    echo "----------------<br />";
+}
+
 $mysqli = new mysqli("localhost", "root", "", "mybase");
 $mysqli->query("SET NAMES 'utf-8'");
-$success = $mysqli->query("INSERT INTO `users` (`login`, `password`, `regdate`) VALUES ('User1', '" . md5("123") . "','" . time() . "')");
-
-$last_insert_id = $mysqli->insert_id;
-
-for ($i = 2; $i < 10; $i++) {
-    $mysqli->query("INSERT INTO `users` (`login`, `password`, `regdate`) VALUES ('User$i', '" . md5("123") . "','" . time() . "')");
-}
-echo $last_insert_id;
-$mysqli->query("UPDATE `users` SET `regdate`='1' WHERE `id`>5");
-$mysqli->query("UPDATE `users` SET `regdate`='111' WHERE `login` = 'MyUser' OR (`id` > 5 AND `id` < 15)");
-
-
-$mysqli->query("DELETE FROM `users` WHERE `id` > '" . ($last_insert_id - 5) . "'");
+$result_set = $mysqli->query("SELECT `login`, `password` FROM `users`");
+printResultSet($result_set);
+$result_set = $mysqli->query("SELECT * FROM `users` WHERE `id` >= 57 ORDER BY `login` DESC LIMIT 1, 2");
+printResultSet($result_set);
+$result_set = $mysqli->query("SELECT COUNT(`id`) FROM `users`");
+printResultSet($result_set);
+$result_set = $mysqli->query("SELECT * FROM `users` WHERE `login` LIKE '%ser%'");
+printResultSet($result_set);
 $mysqli->close();
 ?>
