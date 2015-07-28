@@ -1,86 +1,39 @@
-<?php
-require_once "lib/user_class.php";
-$user = User::getObject();
-$auth = $user->isAuth();
-if (isset($_POST["reg"])) {
-    $login = $_POST["login"];
-    $password = $_POST["password"];
-    $reg_success = $user->regUser($login, $password);
-} elseif (isset($_POST["auth"])) {
-    $login = $_POST["login"];
-    $password = $_POST["password"];
-    $auth_success = $user->login($login, $password);
-    if ($auth_success) {
-        header("Location: index.php");
-        exit;
-    }
-}
-?>
 <html>
-    <heade>
-        <title>Регистрация и авторизация пользователей</title>
-    </heade>
+    <head>
+
+    </head>
     <body>
+        <h1>Cтатья</h1>
+        <p>Текст статьи...</p>
+        <h2>Комментарии</h2>
         <?php
-        if ($auth) {
-            echo "Здравствуйте, " . $_SESSION["login"] . " (<a href='logout.php'>Выход</a>)";
-        } else {
-            if ($_POST["reg"]) {
-                if ($reg_success)
-                    echo "<span style='color: blue;'>Регистрация прошла успешно</span>";
-                else
-                    echo "<span style='color: red;'>Ошибка регистрации!</span>";
+
+        function transformCommentsToArray() {
+            $string = file_get_contents("comments.txt");
+            $array = explode("\n", $string);
+
+            for ($i = 0; $i < count($array); $i++) {
+                $data = explode(";", $array[$i]);
+                $result[$i]["name"] = $data[0];
+                $result[$i]["content"] = $data[1];
             }
-            elseif ($_POST["auth"]) {
-                if (!$auth_success)
-                    echo "<span style='color: red;'>Неверное имя пользователя и/или пароль</span>";
+            return $result;
+        }
+
+        $array = transformCommentsToArray();
+        if (count($array) != 0) {
+            echo "<table>";
+            for ($i = 0; $i < count($array); $i++) {
+                echo "<tr>";
+                echo "<td><b>" . $array[$i]["name"] . "</b></td>";
+                echo "<td>" . $array[$i]["content"] . "</td>";
+                echo "</tr>";
+                echo "<tr>";
+                echo "<td colspan='2'><hr /></td>";
+                echo "</tr>";
             }
-            echo '<h1>Регистрация</h1>
-        <form name="reg" action="index.php" method="post">
-            <table>
-                <tr>
-                    <td>Логин: </td>
-                    <td>
-                        <input type="text" name="login">
-                    </td>
-                </tr>
-                <tr>
-                    <td>Пароль: </td>
-                    <td>
-                        <input type="password" name="password">
-                    </td>
-                </tr>
-                <tr>
-                    <td colspan="2">
-                        <input type="submit" name="reg" value="Зарегистрироваться">
-                    </td>
-                </tr>
-            </table>
-        </form>
-        <h1>Авторизация</h1>
-        <form name="auth" action="index.php" method="post">
-            <table>
-                <tr>
-                    <td>Логин: </td>
-                    <td>
-                        <input type="text" name="login">
-                    </td>
-                </tr>
-                <tr>
-                    <td>Пароль: </td>
-                    <td>
-                        <input type="password" name="password">
-                    </td>
-                </tr>
-                <tr>
-                    <td colspan="2">
-                        <input type="submit" name="auth" value="Войти">
-            </td>
-            </tr>
-            </table>
-            </form>';
+            echo "</table>";
         }
         ?>
-
     </body>
 </html>
