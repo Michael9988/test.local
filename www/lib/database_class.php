@@ -9,7 +9,7 @@ class DataBase {
     private $mysqli;
     private $valid;
 
-    private function __construct() {
+    public function __construct() {
         $this->config = new Config();
         $this->valid = new CheckValid();
         $this->mysqli = new mysqli($this->config->host, $this->config->user, $this->config->password, $this->config->db);
@@ -112,6 +112,15 @@ class DataBase {
 
     public function getAll($table_name, $order, $up) {
         return $this->select($table_name, array("*"), "", $order, $up);
+    }
+
+    public function getAllOnField($table_name, $field, $value, $order, $up) {
+        return $this->select($table_name, array("*"), "`$field`='" . addslashes($value) . "'", $order, $up);
+    }
+
+    public function getLastId($table_name) {
+        $data = $this->select($table_name, array("MAX(`id`)"));
+        return $date[0]["MAX(`id`)"];
     }
 
     public function deleteOnId($table_name, $id) {
