@@ -1,39 +1,29 @@
-<html>
-    <head>
+<?php
 
-    </head>
-    <body>
-        <h1>Cтатья</h1>
-        <p>Текст статьи...</p>
-        <h2>Комментарии</h2>
-        <?php
+mb_internal_encoding("UTF-8");
+require_once "lib/database_class.php";
+require_once "lib/frontpagecontent_class.php";
+require_once "lib/sectioncontent_class.php";
+require_once "lib/articlecontent_class.php";
+require_once "lib/regcontent_class.php";
 
-        function transformCommentsToArray() {
-            $string = file_get_contents("comments.txt");
-            $array = explode("\n", $string);
+$db = new DataBase();
+$view = $_GET["view"];
+switch ($view) {
+    case "":
+        $content = new FrontPageContent($db);
+        break;
+    case "section":
+        $content = new SectionContent($db);
+        break;
+    case "article":
+        $content = new ArticleContent($db);
+        break;
+    case "reg":
+        $content = new RegContent($db);
+        break;
+    default: exit;
+}
 
-            for ($i = 0; $i < count($array); $i++) {
-                $data = explode(";", $array[$i]);
-                $result[$i]["name"] = $data[0];
-                $result[$i]["content"] = $data[1];
-            }
-            return $result;
-        }
-
-        $array = transformCommentsToArray();
-        if (count($array) != 0) {
-            echo "<table>";
-            for ($i = 0; $i < count($array); $i++) {
-                echo "<tr>";
-                echo "<td><b>" . $array[$i]["name"] . "</b></td>";
-                echo "<td>" . $array[$i]["content"] . "</td>";
-                echo "</tr>";
-                echo "<tr>";
-                echo "<td colspan='2'><hr /></td>";
-                echo "</tr>";
-            }
-            echo "</table>";
-        }
-        ?>
-    </body>
-</html>
+echo $content->getContent();
+?>

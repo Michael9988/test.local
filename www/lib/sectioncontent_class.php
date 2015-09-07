@@ -10,9 +10,9 @@ class SectionContent extends Modules {
 
     public function __construct($db) {
         parent::__construct($db);
-        $this->articles = $this->article->getAllOnSectionID($this->data["id"]);
+        $this->articles = $this->article->getAllOnSectionId($this->data["id"]);
         $this->section_info = $this->section->get($this->data["id"]);
-        $this->page = (isset($this->data["page"])) ? $this->data["page"] : 1;
+        $this->page = (isset($this->data["page"])) ? $this->data["page"] : 1;        
     }
 
     protected function getTitle() {
@@ -21,6 +21,7 @@ class SectionContent extends Modules {
         else
             return $this->section_info["title"];
     }
+    
 
     protected function getDescription() {
         return $this->section_info["meta_desc"];
@@ -37,7 +38,7 @@ class SectionContent extends Modules {
     }
 
     protected function getMiddle() {
-        return $this->getBlockArticles($this->articles, $this->page);
+        return $this->getBlogArticles($this->articles, $this->page);
     }
 
     protected function getBottom() {

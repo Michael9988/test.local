@@ -22,7 +22,7 @@ class DataBase {
 
     private function select($table_name, $fields, $where = "", $order = "", $up = true, $limit = "") {
         for ($i = 0; $i < count($fields); $i++) {
-            if ((strpos($fields[$i], "(") === FALSE) && ($fields[$i] !== "*"))
+            if ((strpos($fields[$i], "(") === FALSE) && ($fields[$i] != "*"))
                 $fields[$i] = "`" . $fields . "`";
         }
         $fields = implode(",", $fields);
@@ -98,7 +98,7 @@ class DataBase {
     }
 
     public function getField($table_name, $field_out, $field_in, $value_in) {
-        $data = $this->select($table_name, array($field_out), "`field_in`='" . addslashes($value_in) . "'");
+        $data = $this->select($table_name, array($field_out), "`$field_in`='" . addslashes($value_in) . "'");
         if (count($data) != 1)
             return FALSE;
         return $data[0][$field_out];
@@ -143,7 +143,7 @@ class DataBase {
         if (!$this->existsID($table_name, $id))
             return FALSE;
         $arr = $this->select($table_name, array("*"), "`id` = '$id'");
-        return arr[0];
+        return $arr[0];
     }
 
     public function getRandomElements($table_name, $count) {
@@ -165,7 +165,7 @@ class DataBase {
     private function existsID($table_name, $id) {
         if (!$this->valid->validID($id))
             return FALSE;
-        $data = $this->select($table_name, array("id"), "`$field` = '" . addslashes($value) . "'");
+        $data = $this->select($table_name, array("id"), "`id` = '" . addslashes($id) . "'");
         if (count($data) === 0)
             return FALSE;
         return TRUE;

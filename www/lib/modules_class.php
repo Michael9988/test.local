@@ -31,6 +31,59 @@ abstract class Modules {
         $this->data = $this->secureData($_GET);
     }
 
+    public function getContent() {
+        $sr["title"] = $this->getTitle();
+        $sr["meta_desc"] = $this->getDescription();
+        $sr["meta_key"] = $this->getKeyWords();
+        $sr["menu"] = $this->getMenu();
+        $sr["auth_user"] = $this->getAuthUser();
+        $sr["banners"] = $this->getBanners();
+        $sr["top"] = $this->getTop();
+        $sr["middle"] = $this->getMiddle();
+        $sr["bottom"] = $this->getBottom();
+        return $this->getReplaceTemplate($sr, "main");
+    }
+
+    abstract protected function getTitle();
+
+    abstract protected function getDescription();
+
+    abstract protected function getKeyWords();
+
+    abstract protected function getMiddle();
+
+    protected function getMenu() {
+        $menu = $this->menu->getAll();
+        for ($i = 0; $i < count($menu); $i++) {
+            $sr["title"] = $menu[$i]["title"];
+            $sr["link"] = $menu[$i]["link"];
+            $text .= $this->getReplaceTemplate($sr, "menu_item");
+        }
+        return $text;
+    }
+
+    protected function getAuthUser() {
+        $sr["message_auth"] = "";
+        return $this->getReplaceTemplate($sr, "form_auth");
+    }
+
+    protected function getBanners() {
+        $banners = $this->banner->getAll();
+        for ($i = 0; $i < count($banners); $i++) {
+            $sr["code"] = $banners[$i]["code"];
+            $text .= $this->getReplaceTemplate($sr, "banner");
+        }
+        return $text;
+    }
+
+    protected function getTop() {
+        return "";
+    }
+
+    protected function getBottom() {
+        return "";
+    }
+
     private function secureData($data) {
         foreach ($data as $key => $value) {
             if (is_array($value))
@@ -39,6 +92,38 @@ abstract class Modules {
                 $data[$key] = htmlspecialchars($value);
         }
         return $data;
+    }
+
+    protected function getBlogArticles($articles, $page) {
+        $start = ($page - 1) * $this->config->count_blog;
+        $end = (count($articles) > ($start + $this->config->count_blog)) ? $start + $this->config->count_blog : count($articles);
+        for ($i = $start; $i < $end; $i++) {
+            $sr["title"] = $articles[$i]["title"];
+            $sr["intro_text"] = $articles[$i]["intro_text"];
+            $sr["date"] = $this->formatDate($articles[$i]["date"]);
+            $sr["link_article"] = $this->config->address . "?view=article&amp;id=" . $articles[$i]["id"];
+            $text .= $this->getReplaceTemplate($sr, "article_intro");
+        }
+        return $text;
+    }
+
+    protected function formatDate($time) {
+        return date("d.m.Y H:i:s", $time);
+    }
+
+    protected function getPagination($count, $count_on_page, $link) {
+        $count_pages = ceil($count / $count_on_page);
+        $sr["number"] = 1;
+        $sr["link"] = $link;
+        $pages = $this->getReplaceTemplate($sr, "number_page");
+        $sym = (strpos($link, "?") != FALSE) ? "&amp;" : "?";
+        for ($i = 2; $i <= $count_pages; $i++) {
+            $sr["number"] = $i;
+            $sr["link"] = $link . $sym . "page=$i";
+            $pages .= $this->getReplaceTemplate($sr, "number_page");
+        }
+        $els["number_pages"] = $pages;
+        return $this->getReplaceTemplate($els, "pagination");
     }
 
     protected function getTemplate($name) {
@@ -55,7 +140,7 @@ abstract class Modules {
         $replace = array();
         $i = 0;
         foreach ($sr as $key => $value) {
-            $search[$i] = $key;
+            $search[$i] = "%$key%";
             $replace[$i] = $value;
             $i++;
         }

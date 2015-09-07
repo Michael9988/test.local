@@ -33,7 +33,7 @@ class FrontPageContent extends Modules {
     }
 
     protected function getMiddle() {
-        return $this->getBlockArticles($this->articles, $this->page);
+        return $this->getBlogArticles($this->articles, $this->page);
     }
 
     protected function getBottom() {
