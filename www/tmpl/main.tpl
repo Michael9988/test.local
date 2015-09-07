@@ -41,7 +41,7 @@
                 <div class="clear">
                     <hr />
                     <div id="footer">
-                        <p>Все права защищены &copy; 2012</p>
+                        <p>Все права защищены &copy; 2015</p>
                     </div>
                 </div>
             </div>
