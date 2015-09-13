@@ -6,6 +6,7 @@ require_once "lib/frontpagecontent_class.php";
 require_once "lib/sectioncontent_class.php";
 require_once "lib/articlecontent_class.php";
 require_once "lib/regcontent_class.php";
+require_once "lib/messagecontent_class.php";
 
 $db = new DataBase();
 $view = $_GET["view"];
@@ -21,6 +22,9 @@ switch ($view) {
         break;
     case "reg":
         $content = new RegContent($db);
+        break;
+    case "message":
+        $content = new MessageContent($db);
         break;
     default: exit;
 }

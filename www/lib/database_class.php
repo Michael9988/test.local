@@ -22,30 +22,36 @@ class DataBase {
 
     private function select($table_name, $fields, $where = "", $order = "", $up = true, $limit = "") {
         for ($i = 0; $i < count($fields); $i++) {
-            if ((strpos($fields[$i], "(") === FALSE) && ($fields[$i] != "*"))
-                $fields[$i] = "`" . $fields . "`";
+            if ((strpos($fields[$i], "(") === FALSE) && ($fields[$i] != "*")) {
+                $fields[$i] = "`" . $fields[$i] . "`";
+            }
         }
         $fields = implode(",", $fields);
         $table_name = $this->config->db_prefix . $table_name;
-        if (!$order)
+        if (!$order) {
             $order = "ORDER BY `id`";
-        else {
+        } else {
             if ($order != "RAND()") {
                 $order = "ORDER BY `$order`";
-                if (!$up)
+                if (!$up) {
                     $order .= "DESC";
-            } else
+                }
+            } else {
                 $order = "ORDER BY $order";
+            }
         }
-        if ($limit)
+        if ($limit) {
             $limit = "LIMIT $limit";
-        if ($where)
+        }
+        if ($where) {
             $query = "SELECT $fields FROM $table_name WHERE $where $order $limit";
-        else
+        } else {
             $query = "SELECT $fields FROM $table_name $order $limit";
+        }
         $result_set = $this->query($query);
-        if (!$result_set)
+        if (!$result_set) {
             return FALSE;
+        }
         $i = 0;
         while ($row = $result_set->fetch_assoc()) {
             $data[$i] = $row;
@@ -58,28 +64,32 @@ class DataBase {
     public function insert($table_name, $new_values) {
         $table_name = $this->config->db_prefix . $table_name;
         $query = "INSERT INTO $table_name (";
-        foreach ($new_values as $field => $value)
+        foreach ($new_values as $field => $value) {
             $query .= "`" . $field . "`,";
+        }
         $query = substr($query, 0, -1);
         $query .= ") VALUES (";
-        foreach ($new_values as $value)
+        foreach ($new_values as $value) {
             $query .= "'" . addslashes($value) . "',";
+        }
         $query = substr($query, 0, -1);
         $query .= ")";
         return $this->query($query);
     }
 
-    private function update($table_names, $upd_fields, $where) {
+    private function update($table_name, $upd_fields, $where) {
         $table_name = $this->config->db_prefix . $table_name;
         $query = "UPDATE $table_name SET ";
-        foreach ($upd_fields as $field => $value)
+        foreach ($upd_fields as $field => $value) {
             $query .= "`$field` = '" . addslashes($value) . "'";
+        }
         $query = substr($query, 0, -1);
         if ($where) {
             $query .= " WHERE $where";
             return $this->query($query);
-        } else
+        } else {
             return FALSE;
+        }
     }
 
     public function delete($table_name, $where = "") {
@@ -87,8 +97,9 @@ class DataBase {
         if ($where) {
             $query .= "DELETE FROM $table_name WHERE $where";
             return $this->query($query);
-        } else
+        } else {
             return FALSE;
+        }
     }
 
     public function deleteAll($table_name) {
@@ -99,14 +110,16 @@ class DataBase {
 
     public function getField($table_name, $field_out, $field_in, $value_in) {
         $data = $this->select($table_name, array($field_out), "`$field_in`='" . addslashes($value_in) . "'");
-        if (count($data) != 1)
+        if (count($data) != 1) {
             return FALSE;
+        }
         return $data[0][$field_out];
     }
 
     public function getFieldOnId($table_name, $id, $field_out) {
-        if (!$this->existsID($table_name, $id))
+        if (!$this->existsID($table_name, $id)) {
             return FALSE;
+        }
         return $this->getField($table_name, $field_out, "id", $id);
     }
 
@@ -120,12 +133,13 @@ class DataBase {
 
     public function getLastId($table_name) {
         $data = $this->select($table_name, array("MAX(`id`)"));
-        return $date[0]["MAX(`id`)"];
+        return $data[0]["MAX(`id`)"];
     }
 
     public function deleteOnId($table_name, $id) {
-        if (!$this->existsID($table_name, $id))
+        if (!$this->existsID($table_name, $id)) {
             return FALSE;
+        }
         return $this->delete($table_name, "`id` = '$id'");
     }
 
@@ -134,14 +148,16 @@ class DataBase {
     }
 
     public function setFieldOnId($table_name, $id, $field, $value) {
-        if (!$this->existsID($table_name, $id))
+        if (!$this->existsID($table_name, $id)) {
             return FALSE;
+        }
         return $this->setField($table_name, $field, $value, "id", $id);
     }
 
     public function getElementOnId($table_name, $id) {
-        if (!$this->existsID($table_name, $id))
+        if (!$this->existsID($table_name, $id)) {
             return FALSE;
+        }
         $arr = $this->select($table_name, array("*"), "`id` = '$id'");
         return $arr[0];
     }
@@ -157,23 +173,27 @@ class DataBase {
 
     public function isExists($table_name, $field, $value) {
         $data = $this->select($table_name, array("id"), "`$field` = '" . addslashes($value) . "'");
-        if (count($data) === 0)
+        if (count($data) === 0) {
             return FALSE;
+        }
         return TRUE;
     }
 
     private function existsID($table_name, $id) {
-        if (!$this->valid->validID($id))
+        if (!$this->valid->validID($id)) {
             return FALSE;
+        }
         $data = $this->select($table_name, array("id"), "`id` = '" . addslashes($id) . "'");
-        if (count($data) === 0)
+        if (count($data) === 0) {
             return FALSE;
+        }
         return TRUE;
     }
 
     public function __destruct() {
-        if ($this->mysqli)
+        if ($this->mysqli) {
             $this->mysqli->close();
+        }
     }
 
 }

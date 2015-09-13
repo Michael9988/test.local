@@ -6,6 +6,11 @@ require_once "database_class.php";
 
 abstract class GlobalClass {
 
+    private $db;
+    private $table_name;
+    protected $config;
+    protected $valid;
+
     protected function __construct($table_name, $db) {
         $this->db = $db;
         $this->table_name = $table_name;

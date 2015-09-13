@@ -18,6 +18,7 @@ abstract class Modules {
     protected $banner;
     protected $message;
     protected $data;
+    protected $user_info;
 
     public function __construct($db) {
         session_start();
@@ -29,6 +30,17 @@ abstract class Modules {
         $this->banner = new Banner($db);
         $this->message = new Message();
         $this->data = $this->secureData($_GET);
+        $this->user_info = $this->getUser();        
+    }
+
+    private function getUser() {
+        $login = $_SESSION["login"];
+        $password = $_SESSION["password"];
+        if ($this->user->checkUser($login, $password)) {
+            return $this->user->getUserOnLogin($login);
+        } else {
+            return FALSE;
+        }
     }
 
     public function getContent() {
@@ -63,7 +75,16 @@ abstract class Modules {
     }
 
     protected function getAuthUser() {
-        $sr["message_auth"] = "";
+        if ($this->user_info) {
+            $sr["username"] = $this->user_info["login"];
+            return $this->getReplaceTemplate($sr, "user_panel");
+        }
+        if ($_SESSION["error_auth"] == 1) {
+            $sr["message_auth"] = $this->getMessage("ERROR_AUTH");
+            unset($_SESSION["error_auth"]);
+        } else {
+            $sr["message_auth"] = "";
+        }
         return $this->getReplaceTemplate($sr, "form_auth");
     }
 
@@ -86,10 +107,11 @@ abstract class Modules {
 
     private function secureData($data) {
         foreach ($data as $key => $value) {
-            if (is_array($value))
+            if (is_array($value)) {
                 $this->secureData($value);
-            else
+            } else {
                 $data[$key] = htmlspecialchars($value);
+            }
         }
         return $data;
     }
@@ -108,7 +130,16 @@ abstract class Modules {
     }
 
     protected function formatDate($time) {
-        return date("d.m.Y H:i:s", $time);
+        return date("Y-m-d H:i:s", $time);
+    }
+
+    protected function getMessage($message = "") {
+        if ($message == "") {
+            $message = $_SESSION["message"];
+            unset($_SESSION["message"]);
+        }
+        $sr["message"] = $this->message->getText($message);
+        return $this->getReplaceTemplate($sr, "message_string");
     }
 
     protected function getPagination($count, $count_on_page, $link) {

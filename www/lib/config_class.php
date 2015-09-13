@@ -16,7 +16,7 @@ class Config {
     var $dir_tmpl = "tmpl/";
     var $min_login = 3;
     var $max_login = 255;
-    var $count_blog = 2;
+    var $count_blog = 3;
 
 }
 ?>

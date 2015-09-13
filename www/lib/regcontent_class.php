@@ -21,7 +21,7 @@ class RegContent extends Modules {
     }
 
     protected function getMiddle() {
-        $sr["message"] = "";
+        $sr["message"] = $this->getMessage();
         $sr["login"] = $_SESSION["login"];
         return $this->getReplaceTemplate($sr, "form_reg");
     }

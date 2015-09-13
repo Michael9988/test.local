@@ -9,19 +9,29 @@ class User extends GlobalClass {
     }
 
     public function addUser($login, $password, $regdate) {
-        if (!$this->checkValid($login, $password, $regdate))
+        if (!$this->checkValid($login, $password, $regdate)) {
             return FALSE;
+        }
         return $this->add(array("login" => $login, "password" => $password, "regdate" => $regdate));
     }
 
     public function editUser($id, $login, $password, $regdate) {
-        if (!$this->checkValid($login, $password, $regdate))
+        if (!$this->checkValid($login, $password, $regdate)) {
             return FALSE;
-        return $this->add($id, array("login" => $login, "password" => $password, "regdate" => $regdate));
+        }
+        return $this->edit($id, array("login" => $login, "password" => $password, "regdate" => $regdate));
     }
 
-    public function isExists($login) {
+    public function isExistsUser($login) {
         return $this->isExists("login", $login);
+    }
+
+    public function checkUser($login, $password) {
+        $user = $this->getUserOnLogin($login);
+        if (!$user) {
+            return FALSE;
+        }
+        return $user["password"] === $password;
     }
 
     public function getUserOnLogin($login) {
@@ -30,12 +40,15 @@ class User extends GlobalClass {
     }
 
     private function checkValid($login, $password, $regdate) {
-        if (!$this->valid->validLogin($login))
+        if (!$this->valid->validLogin($login)) {
             return FALSE;
-        if (!$this->valid->validHash($password))
+        }
+        if (!$this->valid->validHash($password)) {
             return FALSE;
-        if (!$this->valid->validTimeStamp($regdate))
+        }
+        if (!$this->valid->validTimeStamp($regdate)) {
             return FALSE;
+        }
         return TRUE;
     }
 
