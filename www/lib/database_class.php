@@ -190,6 +190,68 @@ class DataBase {
         return TRUE;
     }
 
+    public function search($table_name, $words, $fields) {
+        $words = mb_strtolower($words);
+        $words = trim($words);
+        $words = quotemeta($words);
+        if ($words == "") {
+            return FALSE;
+        }
+        $where = "";
+        $arraywords = explode(" ", $words);
+        $logic = "OR";
+        foreach ($arraywords as $key => $value) {
+            if (isset($arraywords[$key - 1])) {
+                $where .= $logic;
+            }
+            for ($i = 0; $i < count($fields); $i++) {
+                $where .= "`" . $fields[$i] . "` LIKE '%" . addslashes($value) . "%'";
+                if (($i + 1) != count($fields)) {
+                    $where .= " OR";
+                }
+            }
+        }
+        $results = $this->select($table_name, array("*"), $where);
+        $k = 0;
+        $data = array();
+        for ($i = 0; $i < count($results); $i++) {
+            for ($j = 0; $j < count($fields); $j++) {
+                $results[$i][$fields[$j]] = mb_strtolower(strip_tags($results[$i][$fields[$j]]));
+            }
+            $data[$k] = $results[$i];
+            $data[$k]["relevant"] = $this->getRelevantForSearch($results[$i], $fields, $words);
+            $k++;
+        }
+        $data = $this->orderResultSearch($data, "relevant");
+        return $data;
+    }
+
+    private function getRelevantForSearch($result, $fields, $words) {
+        $relevant = 0;
+        $arraywords = explode(" ", $words);
+        for ($i = 0; $i < count($fields); $i++) {
+            for ($j = 0; $j < count($arraywords); $j++) {
+                $relevant += substr_count($result[$fields[$i]], $arraywords[$j]);
+            }
+        }
+        return $relevant;
+    }
+
+    private function orderResultSearch($data, $order) {
+        for ($i = 0; $i < count($data) - 1; $i++) {
+            $k = $i;
+            for ($j = $i + 1; $j < count($data); $j++) {
+                if ($data[$j][$order] > $data[$k][$order]) {
+                    $k = $j;
+                }
+                $temp = $data[$k];
+                $data[$k] = $data[$i];
+                $data[$i] = $temp;
+            }
+        }
+        return $data;
+    }
+
     public function __destruct() {
         if ($this->mysqli) {
             $this->mysqli->close();

@@ -74,6 +74,10 @@ abstract class GlobalClass {
         return $this->db->isExists($this->table_name, $field, $value);
     }
 
+    protected function search($words, $fields) {
+        return $this->db->search($this->table_name, $words, $fields);
+    }
+
 }
 ?>
 

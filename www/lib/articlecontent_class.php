@@ -9,7 +9,6 @@ class ArticleContent extends Modules {
     public function __construct($db) {
         parent::__construct($db);
         $this->article_info = $this->article->get($this->data["id"]);
-        print_r($this->article_info);
     }
 
     protected function getTitle() {

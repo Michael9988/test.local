@@ -16,6 +16,10 @@ class Article extends GlobalClass {
         return $this->getAllOnField("section_id", $section_id, "date", FALSE);
     }
 
+    public function searchArticles($words) {
+        return $this->search($words, array("title", "full_text"));
+    }
+
 }
 
 ?>
