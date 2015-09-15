@@ -212,6 +212,9 @@ class DataBase {
             }
         }
         $results = $this->select($table_name, array("*"), $where);
+        if (!$results){
+            return FALSE;
+        }
         $k = 0;
         $data = array();
         for ($i = 0; $i < count($results); $i++) {

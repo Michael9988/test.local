@@ -24,7 +24,7 @@ class SearchContent extends Modules {
     }
 
     protected function getMiddle() {
-        $results = $this->article->searchArticles($this->words);
+        $results = $this->article->searchArticles($this->words);        
         if ($results === FALSE) {
             return $this->getTemplate("search_notfound");
         }

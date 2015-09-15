@@ -30,7 +30,7 @@ abstract class Modules {
         $this->banner = new Banner($db);
         $this->message = new Message();
         $this->data = $this->secureData($_GET);
-        $this->user_info = $this->getUser();        
+        $this->user_info = $this->getUser();
     }
 
     private function getUser() {
@@ -176,6 +176,15 @@ abstract class Modules {
             $i++;
         }
         return str_replace($search, $replace, $content);
+    }
+
+    protected function redirect($link) {
+        header("Location: $link");
+        exit;
+    }
+
+    protected function notFound() {
+        $this->redirect($this->config->address . "?view=notfound");
     }
 
 }
