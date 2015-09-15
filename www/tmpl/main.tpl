@@ -31,7 +31,8 @@
                         </p>
                     </form>
                     <h2>Реклама</h2>
-                    %banners%                    
+                    %banners%
+                    %poll%
                 </div>
                 <div id="center">
                     %top%

@@ -7,6 +7,8 @@ require_once "user_class.php";
 require_once "menu_class.php";
 require_once "banner_class.php";
 require_once "message_class.php";
+require_once "poll_class.php";
+require_once "pollvariant_class.php";
 
 abstract class Modules {
 
@@ -19,6 +21,8 @@ abstract class Modules {
     protected $message;
     protected $data;
     protected $user_info;
+    protected $poll;
+    protected $poll_variant;
 
     public function __construct($db) {
         session_start();
@@ -31,6 +35,8 @@ abstract class Modules {
         $this->message = new Message();
         $this->data = $this->secureData($_GET);
         $this->user_info = $this->getUser();
+        $this->poll = new Poll($db);
+        $this->poll_variant = new PollVariant($db);
     }
 
     private function getUser() {
@@ -53,7 +59,22 @@ abstract class Modules {
         $sr["top"] = $this->getTop();
         $sr["middle"] = $this->getMiddle();
         $sr["bottom"] = $this->getBottom();
+        $sr["poll"] = $this->getPoll();
         return $this->getReplaceTemplate($sr, "main");
+    }
+
+    private function getPoll() {
+        $poll = $this->poll->getRandomElements(1);
+        $poll = $poll[0];
+        $variants = $this->poll_variant->getAllOnPollID($poll["id"]);
+        $sr["title"] = $poll["title"];        
+        for ($i = 0; $i < count($variants); $i++) {
+            $new_sr["title"] = $variants[$i]["title"];
+            $new_sr["id"] = $variants[$i]["id"];
+            $text .= $this->getReplaceTemplate($new_sr, "poll_variant");
+        }
+        $sr["variants"] = $text;
+        return $this->getReplaceTemplate($sr, "poll");
     }
 
     abstract protected function getTitle();

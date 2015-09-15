@@ -31,6 +31,10 @@ class CheckValid {
         return $this->validString($login, $this->config->min_login, $this->config->max_login);
     }
 
+    public function validVotes($votes) {
+        return $this->isNoNegativeInteger($votes);
+    }
+
     public function validHash($hash) {
         if (!$this->validString($hash, 32, 32)) {
             return FALSE;

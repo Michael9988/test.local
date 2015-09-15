@@ -2,6 +2,8 @@
 
 require_once "config_class.php";
 require_once "user_class.php";
+require_once "poll_class.php";
+require_once "pollvariant_class.php";
 
 class Manage {
 
@@ -13,6 +15,8 @@ class Manage {
         session_start();
         $this->config = new Config();
         $this->user = new User($db);
+        $this->poll = new Poll($db);
+        $this->poll_variant = new PollVariant($db);
         $this->data = $this->secureData(array_merge($_POST, $_GET));
     }
 
@@ -74,6 +78,14 @@ class Manage {
         unset($_SESSION["login"]);
         unset($_SESSION["password"]);
         return $_SERVER["HTTP_REFERER"];
+    }
+
+    public function poll() {
+        $id = $this->data["variant"];
+        $variant = $this->poll_variant->get($id);
+        $poll_id = $variant["poll_id"];
+        $this->poll_variant->setVotes($id, $variant["votes"] + 1);
+        return $this->config->address . "?view=poll&id=$poll_id";
     }
 
     private function hashPassword($password) {
