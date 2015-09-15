@@ -8,6 +8,7 @@ require_once "lib/articlecontent_class.php";
 require_once "lib/regcontent_class.php";
 require_once "lib/messagecontent_class.php";
 require_once "lib/searchcontent_class.php";
+require_once "lib/notfoundcontent_class.php";
 
 $db = new DataBase();
 $view = $_GET["view"];
@@ -30,7 +31,7 @@ switch ($view) {
     case "search":
         $content = new SearchContent($db);
         break;
-    default: exit;
+    default: $content = new NotFoundContent($db);
 }
 
 echo $content->getContent();
