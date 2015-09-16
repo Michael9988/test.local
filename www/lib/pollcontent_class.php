@@ -8,7 +8,7 @@ class PollContent extends Modules {
 
     public function __construct($db) {
         parent::__construct($db);
-        $this->poll_info = $this->poll->get($this->data["id"]);
+        $this->poll_info = $this->poll->get($this->data["id"]);        
         if (!$this->poll_info) {
             $this->notFound();
         }
@@ -33,6 +33,7 @@ class PollContent extends Modules {
             $sr["votes"] = $variants[$i]["votes"];
             $text .= $this->getReplaceTemplate($sr, "poll_item");
         }
+        //print_r($variants);
         $new_sr["items"] = $text;
         return $this->getReplaceTemplate($new_sr, "poll_result");
     }

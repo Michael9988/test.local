@@ -15,7 +15,7 @@ class PollVariant extends GlobalClass {
     public function setVotes($id, $votes) {
         if (!$this->valid->validVotes($votes)) {
             return FALSE;
-        }        
+        }          
         return $this->setFieldOnId($id, "votes", $votes);
     }
 
