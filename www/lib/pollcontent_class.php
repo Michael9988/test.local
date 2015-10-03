@@ -32,8 +32,7 @@ class PollContent extends Modules {
             $sr["title"] = $variants[$i]["title"];
             $sr["votes"] = $variants[$i]["votes"];
             $text .= $this->getReplaceTemplate($sr, "poll_item");
-        }
-        //print_r($variants);
+        }       
         $new_sr["items"] = $text;
         return $this->getReplaceTemplate($new_sr, "poll_result");
     }

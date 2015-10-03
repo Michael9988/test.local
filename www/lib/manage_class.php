@@ -9,7 +9,7 @@ class Manage {
 
     private $config;
     private $user;
-    private $data;    
+    private $data;
 
     public function __construct($db) {
         session_start();
@@ -84,7 +84,9 @@ class Manage {
         $id = $this->data["variant"];
         $variant = $this->poll_variant->get($id);
         $poll_id = $variant["poll_id"];
-        $result = $this->poll_variant->setVotes($id, $variant["votes"]++);         
+        $this->poll_variant->setVotes($id, $variant["votes"] + 1);
+//        print_r($result);
+//        exit;
         return $this->config->address . "?view=poll&id=$poll_id";
     }
 

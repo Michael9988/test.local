@@ -42,7 +42,7 @@ abstract class GlobalClass {
         return $this->db->getFieldOnId($this->table_name, $id, $field);
     }
 
-    protected function setFieldOnId($id, $field, $value) {
+    protected function setFieldOnId($id, $field, $value) {        
         return $this->db->setFieldOnId($this->table_name, $id, $field, $value);
     }
 

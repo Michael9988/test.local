@@ -85,7 +85,7 @@ class DataBase {
         }
         $query = substr($query, 0, -1);
         if ($where) {
-            $query .= " WHERE $where";
+            $query .= "' WHERE $where";
             return $this->query($query);
         } else {
             return FALSE;
@@ -147,7 +147,7 @@ class DataBase {
         return $this->update($table_name, array($field => $value), "`$field_in` = '" . addslashes($value_in) . "'");
     }
 
-    public function setFieldOnId($table_name, $id, $field, $value) {
+    public function setFieldOnId($table_name, $id, $field, $value) {        
         if (!$this->existsID($table_name, $id)) {
             return FALSE;
         }

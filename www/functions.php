@@ -11,8 +11,9 @@ if ($_POST["reg"]) {
     $r = $manage->login();
 } elseif ($_GET["logout"]) {
     $r = $manage->logout();
-} elseif ($_POST["poll"]) {
-    $r = $manage->poll();
+} elseif ($_POST["poll"]) {    
+    $r = $manage->poll();    
+    
 } else {
     exit;
 }
